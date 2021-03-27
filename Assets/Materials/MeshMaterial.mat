@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: MeshMaterial
-  m_Shader: {fileID: 10752, guid: 0000000000000000f000000000000000, type: 0}
+  m_Shader: {fileID: -6465566751694194690, guid: 75a6a04ad8ac34cbcb752b4dd4b69c50, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -19,6 +19,46 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - Texture2DArray_607ff6a61eaa44a4a2d286d25237fdc1:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - Texture2D_2B53F282:
+        m_Texture: {fileID: 2800000, guid: a22f74dadcc373b4da1943778db036d4, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - Texture2D_45B77F75:
+        m_Texture: {fileID: 2800000, guid: 922b2f4389cf30f46ad4dd56df061162, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - Texture2D_65c48fd6fb5c48f98d4dcf9eed46853f:
+        m_Texture: {fileID: 2800000, guid: a22f74dadcc373b4da1943778db036d4, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - Texture2D_7e5f556e0be6400890e1759a967a9e98:
+        m_Texture: {fileID: 2800000, guid: 1acff9429044bf4469ddf77481156ff0, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - Texture2D_8D2E8E65:
+        m_Texture: {fileID: 2800000, guid: 5c38e2edb8ae412468d3186b2e38caf1, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - Texture2D_CD87CE9A:
+        m_Texture: {fileID: 2800000, guid: 1acff9429044bf4469ddf77481156ff0, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - Texture2D_DB27CB7D:
+        m_Texture: {fileID: 2800000, guid: 2b26dd95668c443c4a95ca2fbff48626, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - Texture2D_dd1966fd4b664e7fa838f76b68d2dd91:
+        m_Texture: {fileID: 2800000, guid: 5c38e2edb8ae412468d3186b2e38caf1, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - Texture2D_fc268e50fb5d4e5caa56d0566e3e4a38:
+        m_Texture: {fileID: 2800000, guid: ef7ea6b48536b45019f3793e4ad8afe5, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _BaseMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -47,7 +87,32 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - testTexture:
+        m_Texture: {fileID: 2800000, guid: e65e8c6f286469944a22f2777d8e870c, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     m_Floats:
+    - Vector1_21ad0373f1ec43d197710bb07bea9289: 0
+    - Vector1_39ec03afa5034e59a14f74f2ff620127: 1
+    - Vector1_4C3F5EE4: -10
+    - Vector1_5857EFB5: 1.5
+    - Vector1_65D18AD4: 15
+    - Vector1_6F228B9F: -3
+    - Vector1_A956083A: 100
+    - Vector1_bf3f23ed6d824b4b9f7509c5780a9afb: 1
+    - Vector1_dbd38d76ac564394b9e3d046c25f843c: 1
     - _AlphaClip: 0
     - _Blend: 0
     - _BumpScale: 1
@@ -70,9 +135,16 @@ Material:
     - _Surface: 0
     - _WorkflowMode: 1
     - _ZWrite: 1
+    - maxHeight: 61.756367
+    - minHeight: -4.3322754
+    - testScale: 1
+    - textureScale: 9.8
     m_Colors:
+    - Vector4_2b6daa070ab548a187e43d48d89d4e10: {r: 0, g: 0, b: 0, a: 0}
+    - Vector4_4608273e8a644486aeb41b025b730bdb: {r: 0, g: 0, b: 0, a: 0}
+    - Vector4_a4857e81aec6463cb94c4a9a23e35571: {r: 0, g: 0, b: 0, a: 0}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Color: {r: 0.990566, g: 0.990566, b: 0.990566, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []
