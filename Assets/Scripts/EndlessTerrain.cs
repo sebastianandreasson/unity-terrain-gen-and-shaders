@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class EndlessTerrain : MonoBehaviour {
-  const float scale = 2f;
   const float viewerMoveThresholdForChunkUpdate = 25f;
   const float sqrViewerMoveThresholdForChunkUpdate = viewerMoveThresholdForChunkUpdate * viewerMoveThresholdForChunkUpdate;
   public LODInfo[] detailLevels;
@@ -29,7 +28,7 @@ public class EndlessTerrain : MonoBehaviour {
   }
 
   void Update() {
-    viewerPosition = new Vector2(viewer.position.x, viewer.position.z) / scale;
+    viewerPosition = new Vector2(viewer.position.x, viewer.position.z) / mapGenerator.terrainData.uniformScale;
     if ((viewerPositionOld - viewerPosition).sqrMagnitude > sqrViewerMoveThresholdForChunkUpdate) {
       viewerPositionOld = viewerPosition;
       UpdateVisibleChunks();
@@ -73,6 +72,7 @@ public class EndlessTerrain : MonoBehaviour {
 
     MapData mapData;
     bool mapDataReceived;
+    bool hasVegetation;
     int prevLODIndex = -1;
     public TerrainChunk(Vector2 coord, int size, LODInfo[] detailLevels, Transform parent, Material material) {
       this.detailLevels = detailLevels;
@@ -81,14 +81,15 @@ public class EndlessTerrain : MonoBehaviour {
       Vector3 positionV3 = new Vector3(position.x, 0, position.y);
 
       meshObject = new GameObject("Terrain Chunk");
+      meshObject.layer = LayerMask.NameToLayer("Terrain");
       meshRenderer = meshObject.AddComponent<MeshRenderer>();
       meshRenderer.material = material;
       meshFilter = meshObject.AddComponent<MeshFilter>();
       meshCollider = meshObject.AddComponent<MeshCollider>();
 
-      meshObject.transform.position = positionV3 * scale;
+      meshObject.transform.position = positionV3 * mapGenerator.terrainData.uniformScale;
       meshObject.transform.parent = parent;
-      meshObject.transform.localScale = Vector3.one * scale;
+      meshObject.transform.localScale = Vector3.one * mapGenerator.terrainData.uniformScale;
       SetVisible(false);
 
       lodMeshes = new LODMesh[detailLevels.Length];
@@ -144,6 +145,13 @@ public class EndlessTerrain : MonoBehaviour {
         }
 
         if (lodIndex == 0) {
+          LODMesh lodMesh = lodMeshes[lodIndex];
+          if (lodMesh.hasMesh && !hasVegetation) {
+            VegetationSpawner vegSpawner = FindObjectOfType<VegetationSpawner>();
+            vegSpawner.Spawn(meshObject.transform, mapData.heightMap);
+            hasVegetation = true;
+          }
+
           if (collisionLODMesh.hasMesh) {
             meshCollider.sharedMesh = collisionLODMesh.mesh;
           } else if (!collisionLODMesh.hasRequestedMesh) {
