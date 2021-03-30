@@ -6,6 +6,7 @@ public class TerrainGenerator : MonoBehaviour {
   const float viewerMoveThresholdForChunkUpdate = 25f;
   const float sqrViewerMoveThresholdForChunkUpdate = viewerMoveThresholdForChunkUpdate * viewerMoveThresholdForChunkUpdate;
 
+  public HeightMapGenerator heightMapGenerator;
   public MeshSettings meshSettings;
   public HeightMapSettings heightMapSettings;
   public int colliderLODIndex;
@@ -64,7 +65,8 @@ public class TerrainGenerator : MonoBehaviour {
             TerrainChunk chunk = terrainChunks[viewedChunkCoord];
             chunk.UpdateTerrainChunk();
           } else {
-            TerrainChunk newChunk = new TerrainChunk(viewedChunkCoord, heightMapSettings, meshSettings, detailLevels, colliderLODIndex, viewer, transform, mapMaterial);
+            Erosion erosion = FindObjectOfType<Erosion>();
+            TerrainChunk newChunk = new TerrainChunk(viewedChunkCoord, erosion, heightMapGenerator, heightMapSettings, meshSettings, detailLevels, colliderLODIndex, viewer, transform, mapMaterial);
             terrainChunks.Add(viewedChunkCoord, newChunk);
             newChunk.onVisibilityChanged += OnTerrainChunkVisibilityChanged;
             newChunk.Load();

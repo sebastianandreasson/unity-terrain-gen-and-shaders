@@ -5,8 +5,8 @@ using UnityEngine;
 public static class Noise {
 
   public enum NormalizeMode { Local, Global }
-  public static float[,] GenerateNoiseMap(int mapSize, NoiseSettings settings, Vector2 sampleCenter) {
-    float[,] noiseMap = new float[mapSize, mapSize];
+  public static float[] GenerateNoiseMap(int mapSize, NoiseSettings settings, Vector2 sampleCenter) {
+    float[] noiseMap = new float[mapSize * mapSize];
 
     System.Random prng = new System.Random(settings.seed);
     Vector2[] octaveOffsets = new Vector2[settings.octaves];
@@ -50,11 +50,12 @@ public static class Noise {
         if (noiseHeight > maxNoiseHeight) maxNoiseHeight = noiseHeight;
         if (noiseHeight < minNoiseHeight) minNoiseHeight = noiseHeight;
 
-        noiseMap[x, y] = noiseHeight;
+        int index = y * mapSize + x;
+        noiseMap[index] = noiseHeight;
 
         if (settings.normalizeMode == NormalizeMode.Global) {
-          float normalizedHeight = (noiseMap[x, y] + 1) / maxPossibleHeight;
-          noiseMap[x, y] = Mathf.Clamp(normalizedHeight, 0, int.MaxValue);
+          float normalizedHeight = (noiseMap[index] + 1) / maxPossibleHeight;
+          noiseMap[index] = Mathf.Clamp(normalizedHeight, 0, int.MaxValue);
         }
       }
     }
@@ -62,7 +63,8 @@ public static class Noise {
     if (settings.normalizeMode == NormalizeMode.Local) {
       for (int y = 0; y < mapSize; y++) {
         for (int x = 0; x < mapSize; x++) {
-          noiseMap[x, y] = Mathf.InverseLerp(minNoiseHeight, maxNoiseHeight, noiseMap[x, y]);
+          int index = y * mapSize + x;
+          noiseMap[index] = Mathf.InverseLerp(minNoiseHeight, maxNoiseHeight, noiseMap[index]);
         }
       }
     }

@@ -16,6 +16,7 @@ public class MapPreview : MonoBehaviour {
 
   public MeshSettings meshSettings;
   public HeightMapSettings heightMapSettings;
+  public HeightMapGenerator heightMapGenerator;
   public TextureData textureData;
 
   public Material terrainMaterial;
@@ -29,8 +30,10 @@ public class MapPreview : MonoBehaviour {
     gameObject.SetActive(false);
   }
   public void DrawMapInEditor() {
-    HeightMap heightMap = HeightMapGenerator.GenerateHeightMap(meshSettings.numVertsPerLine, heightMapSettings, Vector2.zero);
-    VegetationSpawner vegSpawn = FindObjectOfType<VegetationSpawner>();
+    Erosion erosion = FindObjectOfType<Erosion>();
+    HeightMap heightMap = heightMapGenerator.GenerateHeightMap(meshSettings.numVertsPerLine, erosion, heightMapSettings, Vector2.zero);
+
+    // VegetationSpawner vegSpawn = FindObjectOfType<VegetationSpawner>();
 
     if (drawMode == DrawMode.NoiseMap) {
       DrawTexture(TextureGenerator.TextureFromHeightMap(heightMap));
