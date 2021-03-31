@@ -5,6 +5,7 @@ using UnityEngine;
 public class VegetationSpawner : MonoBehaviour {
   public GameObject[] treePrefabs;
   public GameObject grassPrefab;
+  public NoiseSettings noiseSettings;
   private GameObject vegetation;
 
   GameObject GetTree(float n) {
@@ -34,12 +35,13 @@ public class VegetationSpawner : MonoBehaviour {
     }
   }
 
-  GameObject SpawnGrass(Transform parent, Vector3 parentOrigin, Vector2 pos) {
+  GameObject SpawnGrass(System.Random randomSeed, Transform parent, Vector3 parentOrigin, Vector2 pos) {
     GameObject grassPlot = new GameObject("Grass - x: " + pos.x + ", y: " + pos.y);
     grassPlot.transform.parent = parent;
 
     for (int i = -2; i < 3; i++) {
       for (int j = -2; j < 3; j++) {
+        if (!Noise.ShouldPlaceAtPosition(randomSeed, i, j, 0.5f)) continue;
         GameObject grass = Instantiate(grassPrefab);
         grass.transform.parent = grassPlot.transform;
         Vector3 origin = new Vector3(parentOrigin.x + pos.x * 2, 50, parentOrigin.y + pos.y * 2);
@@ -60,7 +62,7 @@ public class VegetationSpawner : MonoBehaviour {
   }
 
   public void Spawn(Transform parent, float[,] heightMap) {
-    int size = heightMap.GetLength(0);
+    int size = heightMap.GetLength(0) - 10;
     Vector2 origin = new Vector2(-size, -size);
 
     vegetation = new GameObject("Vegetation");
@@ -76,14 +78,17 @@ public class VegetationSpawner : MonoBehaviour {
     grass.transform.localPosition = Vector3.zero;
     grass.transform.localScale = Vector3.one;
 
+    float[] treeNoise = Noise.GenerateNoiseMap(size, noiseSettings, Vector2.zero);
+    System.Random randomSeed = new System.Random(noiseSettings.seed);
 
     for (int x = 1; x < size - 1; x++) {
       for (int y = 1; y < size - 1; y++) {
-        if (x % 10 == 0 && y % 8 == 0 && heightMap[x, y] > 0.45 && heightMap[x, y] < 0.7) {
+        int index = x * size + y;
+        if (treeNoise[index] > 0.5 && heightMap[x, y] > 2 && heightMap[x, y] < 6 && Noise.ShouldPlaceAtPosition(randomSeed, x, y, 0.56f)) {
           SpawnTree(trees.transform, origin, new Vector2(x, (size - 1) - y));
         }
-        // if (heightMap[x, y] > 0.5 && heightMap[x, y] < 0.6) {
-        //   GameObject g = SpawnGrass(grass.transform, origin, new Vector2(x, (size - 1) - y));
+        // if (heightMap[x, y] > 1.25 && heightMap[x, y] < 4 && Noise.ShouldPlaceAtPosition(randomSeed, x, y, 0.95f)) {
+        //   GameObject g = SpawnGrass(randomSeed, grass.transform, origin, new Vector2(x, (size - 1) - y));
         //   g.transform.parent = grass.transform;
         // }
       }

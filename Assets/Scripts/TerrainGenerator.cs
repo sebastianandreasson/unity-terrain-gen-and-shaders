@@ -9,6 +9,7 @@ public class TerrainGenerator : MonoBehaviour {
   public HeightMapGenerator heightMapGenerator;
   public MeshSettings meshSettings;
   public HeightMapSettings heightMapSettings;
+  public ErosionSettings erosionSettings;
   public int colliderLODIndex;
   public LODInfo[] detailLevels;
   public static float maxViewDist;
@@ -66,7 +67,7 @@ public class TerrainGenerator : MonoBehaviour {
             chunk.UpdateTerrainChunk();
           } else {
             Erosion erosion = FindObjectOfType<Erosion>();
-            TerrainChunk newChunk = new TerrainChunk(viewedChunkCoord, erosion, heightMapGenerator, heightMapSettings, meshSettings, detailLevels, colliderLODIndex, viewer, transform, mapMaterial);
+            TerrainChunk newChunk = new TerrainChunk(viewedChunkCoord, erosion, erosionSettings, heightMapGenerator, heightMapSettings, meshSettings, detailLevels, colliderLODIndex, viewer, transform, mapMaterial);
             terrainChunks.Add(viewedChunkCoord, newChunk);
             newChunk.onVisibilityChanged += OnTerrainChunkVisibilityChanged;
             newChunk.Load();

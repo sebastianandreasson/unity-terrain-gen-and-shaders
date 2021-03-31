@@ -1,9 +1,7 @@
 using UnityEngine;
 
-public class HeightMapGenerator : MonoBehaviour {
-  public Erosion erosion;
-
-  public HeightMap HeightMapForValues(float[] values, int size) {
+public class HeightMapGenerator {
+  static public HeightMap HeightMapForValues(float[] values, int size) {
     float minValue = float.MaxValue;
     float maxValue = float.MinValue;
     float[,] newMap = new float[size, size];
@@ -21,23 +19,20 @@ public class HeightMapGenerator : MonoBehaviour {
     return new HeightMap(newMap, minValue, maxValue);
   }
 
-  public HeightMap GenerateHeightMap(int mapSize, Erosion erosion, HeightMapSettings settings, Vector2 sampleCenter) {
-    int mapSizeWithBorder = mapSize + erosion.erosionBrushRadius * 2;
+  static public float[] GenerateHeightMap(int mapSize, ErosionSettings erosionSettings, HeightMapSettings settings, Vector2 sampleCenter) {
+    int mapSizeWithBorder = mapSize + erosionSettings.brushRadius * 2;
 
     float[] values = Noise.GenerateNoiseMap(mapSizeWithBorder, settings.noiseSettings, sampleCenter);
+    return values;
+  }
+
+  static public float[] ApplyErosionAndHeightMultiplier(float[] values, int mapSize, Erosion erosion, ErosionSettings erosionSettings, HeightMapSettings settings) {
+    float[] erodedValues = erosion.Erode(values, mapSize, erosionSettings);
     AnimationCurve heightCurve_threadsafe = new AnimationCurve(settings.heightCurve.keys);
-
-    for (int i = 0; i < mapSize; i++) {
-      values[i] *= heightCurve_threadsafe.Evaluate(values[i]) * settings.heightMultiplier;
+    for (int i = 0; i < erodedValues.Length; i++) {
+      erodedValues[i] *= heightCurve_threadsafe.Evaluate(erodedValues[i]) * settings.heightMultiplier;
     }
-
-    HeightMap heightMap;
-    if (settings.useErosion) {
-      heightMap = HeightMapForValues(erosion.Erode(values, mapSize), mapSizeWithBorder);
-    } else {
-      heightMap = HeightMapForValues(values, mapSizeWithBorder);
-    }
-    return heightMap;
+    return erodedValues;
   }
 }
 

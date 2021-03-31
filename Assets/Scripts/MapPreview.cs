@@ -6,6 +6,7 @@ public class MapPreview : MonoBehaviour {
   public Renderer textureRenderer;
   public MeshFilter meshFilter;
   public MeshRenderer meshRenderer;
+  public MeshCollider meshCollider;
 
   public enum DrawMode {
     NoiseMap,
@@ -16,7 +17,8 @@ public class MapPreview : MonoBehaviour {
 
   public MeshSettings meshSettings;
   public HeightMapSettings heightMapSettings;
-  public HeightMapGenerator heightMapGenerator;
+
+  public ErosionSettings erosionSettings;
   public TextureData textureData;
 
   public Material terrainMaterial;
@@ -24,16 +26,25 @@ public class MapPreview : MonoBehaviour {
   [Range(0, MeshSettings.numSupportedLODs - 1)]
   public int editorLOD;
   public bool autoUpdate;
+  public bool hideOnStart;
 
   float[,] falloffMap;
+  private HeightMap heightMap;
   void Start() {
-    gameObject.SetActive(false);
+    if (hideOnStart) {
+      gameObject.SetActive(false);
+    }
   }
   public void DrawMapInEditor() {
+    int mapSize = meshSettings.numVertsPerLine;
+    int mapSizeWithBorder = mapSize + erosionSettings.brushRadius * 2;
+    float[] values = HeightMapGenerator.GenerateHeightMap(mapSize, erosionSettings, heightMapSettings, Vector2.zero);
     Erosion erosion = FindObjectOfType<Erosion>();
-    HeightMap heightMap = heightMapGenerator.GenerateHeightMap(meshSettings.numVertsPerLine, erosion, heightMapSettings, Vector2.zero);
+    if (heightMapSettings.useErosion) {
+      values = HeightMapGenerator.ApplyErosionAndHeightMultiplier(values, mapSize, erosion, erosionSettings, heightMapSettings);
+    }
 
-    // VegetationSpawner vegSpawn = FindObjectOfType<VegetationSpawner>();
+    heightMap = HeightMapGenerator.HeightMapForValues(values, mapSizeWithBorder);
 
     if (drawMode == DrawMode.NoiseMap) {
       DrawTexture(TextureGenerator.TextureFromHeightMap(heightMap));
@@ -42,8 +53,6 @@ public class MapPreview : MonoBehaviour {
     } else if (drawMode == DrawMode.FalloffMap) {
       DrawTexture(TextureGenerator.TextureFromHeightMap(new HeightMap(FalloffGenerator.GenerateFalloffMap(meshSettings.numVertsPerLine), 0, 1)));
     }
-
-    // vegSpawn.Spawn(transform, heightMap.heightMap); 
   }
 
   // HeightMap GenerateHeightMap(Vector2 center) {
@@ -65,6 +74,10 @@ public class MapPreview : MonoBehaviour {
 
   //   return new HeightMap(noiseMap);
   // }
+  public void SpawnVegetation() {
+    VegetationSpawner vegSpawn = FindObjectOfType<VegetationSpawner>();
+    vegSpawn.Spawn(transform, heightMap.values);
+  }
 
   public void DrawTexture(Texture2D texture) {
     textureRenderer.sharedMaterial.SetTexture("_MainTex", texture);
@@ -74,7 +87,9 @@ public class MapPreview : MonoBehaviour {
     meshFilter.gameObject.SetActive(false);
   }
   public void DrawMesh(MeshData meshData) {
-    meshFilter.sharedMesh = meshData.CreateMesh();
+    Mesh mesh = meshData.CreateMesh();
+    meshFilter.sharedMesh = mesh;
+    meshCollider.sharedMesh = mesh;
 
     textureRenderer.gameObject.SetActive(false);
     meshFilter.gameObject.SetActive(true);

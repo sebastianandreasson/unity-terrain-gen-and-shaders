@@ -72,6 +72,12 @@ public static class Noise {
     return noiseMap;
   }
 
+  public static bool ShouldPlaceAtPosition(System.Random prng, int x, int y, float weight) {
+    float sampleX = prng.Next(-200000, 200000) + x * weight;
+    float sampleY = prng.Next(-200000, 200000) + x * weight;
+    return Mathf.PerlinNoise(sampleX, sampleY) > weight;
+  }
+
 }
 
 [System.Serializable]

@@ -17,6 +17,7 @@ public class TerrainChunk {
   LODMesh[] lodMeshes;
   int colliderLODIndex;
 
+  float[] heightMapData;
   HeightMap heightMap;
   bool heightMapReceived;
   bool hasVegetation;
@@ -25,12 +26,14 @@ public class TerrainChunk {
   float maxViewDist;
 
   Erosion erosion;
+  ErosionSettings erosionSettings;
   HeightMapGenerator heightMapGenerator;
   HeightMapSettings heightMapSettings;
   MeshSettings meshSettings;
   Transform viewer;
-  public TerrainChunk(Vector2 coord, Erosion erosion, HeightMapGenerator heightMapGenerator, HeightMapSettings heightMapSettings, MeshSettings meshSettings, LODInfo[] detailLevels, int colliderLODIndex, Transform viewer, Transform parent, Material material) {
+  public TerrainChunk(Vector2 coord, Erosion erosion, ErosionSettings erosionSettings, HeightMapGenerator heightMapGenerator, HeightMapSettings heightMapSettings, MeshSettings meshSettings, LODInfo[] detailLevels, int colliderLODIndex, Transform viewer, Transform parent, Material material) {
     this.erosion = erosion;
+    this.erosionSettings = erosionSettings;
     this.heightMapGenerator = heightMapGenerator;
     this.heightMapSettings = heightMapSettings;
     this.meshSettings = meshSettings;
@@ -68,7 +71,7 @@ public class TerrainChunk {
   }
 
   public void Load() {
-    ThreadedDataRequester.RequestData(() => heightMapGenerator.GenerateHeightMap(meshSettings.numVertsPerLine, erosion, heightMapSettings, sampleCenter), OnHeightMapReceived);
+    ThreadedDataRequester.RequestData(() => HeightMapGenerator.GenerateHeightMap(meshSettings.numVertsPerLine, erosionSettings, heightMapSettings, sampleCenter), OnHeightMapReceived);
   }
 
   Vector2 viewerPosition {
@@ -78,7 +81,9 @@ public class TerrainChunk {
   }
 
   void OnHeightMapReceived(object heightMapObject) {
-    this.heightMap = (HeightMap)heightMapObject;
+    this.heightMapData = (float[])heightMapObject;
+
+    this.heightMap = HeightMapGenerator.HeightMapForValues(erosion.Erode(this.heightMapData, meshSettings.numVertsPerLine, erosionSettings), meshSettings.numVertsPerLine + erosionSettings.brushRadius * 2);
     heightMapReceived = true;
 
     UpdateTerrainChunk();
