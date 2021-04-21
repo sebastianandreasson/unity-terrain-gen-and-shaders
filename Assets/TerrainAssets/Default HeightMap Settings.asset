@@ -17,13 +17,13 @@ MonoBehaviour:
     normalizeMode: 1
     scale: 50
     octaves: 6
-    persistance: 0.435
-    lacunarity: 1.55
+    persistance: 0.36
+    lacunarity: 1.5
     seed: 0
     offset: {x: 0, y: 0}
   useFalloff: 0
   useErosion: 1
-  heightMultiplier: 75
+  heightMultiplier: 65
   heightCurve:
     serializedVersion: 2
     m_Curve:

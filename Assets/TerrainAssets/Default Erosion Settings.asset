@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Default Erosion Settings
   m_EditorClassIdentifier: 
   autoUpdate: 1
-  numIterations: 120000
-  brushRadius: 2
+  numIterations: 150000
+  brushRadius: 3
   maxLifetime: 30
   sedimentCapacityFactor: 3
   minSedimentCapacity: 0.01

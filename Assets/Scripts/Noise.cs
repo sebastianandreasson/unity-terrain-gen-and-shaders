@@ -74,8 +74,14 @@ public static class Noise {
 
   public static bool ShouldPlaceAtPosition(System.Random prng, int x, int y, float weight) {
     float sampleX = prng.Next(-200000, 200000) + x * weight;
-    float sampleY = prng.Next(-200000, 200000) + x * weight;
+    float sampleY = prng.Next(-200000, 200000) + y * weight;
     return Mathf.PerlinNoise(sampleX, sampleY) > weight;
+  }
+
+  public static Vector2 ValueForPos(System.Random prng, Vector2 pos) {
+    float sampleX = prng.Next(-200000, 200000) + pos.x * 1000;
+    float sampleY = prng.Next(-200000, 200000) + pos.y * 1000;
+    return new Vector2(Mathf.PerlinNoise(sampleX, sampleY), Mathf.PerlinNoise(sampleX, sampleY));
   }
 
 }

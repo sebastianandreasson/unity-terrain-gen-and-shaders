@@ -20,7 +20,7 @@ public class VegetationSpawner : MonoBehaviour {
     }
     return treePrefabs[0];
   }
-  void SpawnTree(Transform parent, Vector3 offset, Vector2 pos) {
+  void SpawnTree(System.Random randomSeed, Transform parent, Vector3 offset, Vector2 pos) {
     GameObject tree = Instantiate(GetTree(pos.x));
     tree.transform.parent = parent;
     tree.isStatic = true;
@@ -32,30 +32,24 @@ public class VegetationSpawner : MonoBehaviour {
     if (Physics.Raycast(ray, out RaycastHit info, 100, 1 << LayerMask.NameToLayer("Terrain"))) {
       tree.transform.position = new Vector3(tree.transform.position.x, info.point.y, tree.transform.position.z);
       tree.transform.localRotation = Quaternion.Euler(info.normal.x, info.normal.y, info.normal.z);
+      tree.transform.localPosition += new Vector3(Random.Range(-.5f, .5f), 0, Random.Range(-.5f, .5f));
     }
   }
 
   GameObject SpawnGrass(System.Random randomSeed, Transform parent, Vector3 parentOrigin, Vector2 pos) {
     GameObject grassPlot = new GameObject("Grass - x: " + pos.x + ", y: " + pos.y);
     grassPlot.transform.parent = parent;
+    GameObject grass = Instantiate(grassPrefab);
+    grass.transform.parent = grassPlot.transform;
+    Vector3 origin = new Vector3(parentOrigin.x + pos.x * 2, 50, parentOrigin.y + pos.y * 2);
 
-    for (int i = -2; i < 3; i++) {
-      for (int j = -2; j < 3; j++) {
-        if (!Noise.ShouldPlaceAtPosition(randomSeed, i, j, 0.5f)) continue;
-        GameObject grass = Instantiate(grassPrefab);
-        grass.transform.parent = grassPlot.transform;
-        Vector3 origin = new Vector3(parentOrigin.x + pos.x * 2, 50, parentOrigin.y + pos.y * 2);
-        origin += new Vector3(i * 0.5f, 0, j * 0.5f);
+    grass.transform.localPosition = origin;
 
-        grass.transform.localPosition = origin;
-
-        Ray ray = new Ray(origin, Vector3.down);
-        if (Physics.Raycast(ray, out RaycastHit info, 100, 1 << LayerMask.NameToLayer("Terrain"))) {
-          grass.transform.position = new Vector3(grass.transform.position.x, info.point.y, grass.transform.position.z);
-          grass.transform.localRotation = Quaternion.Euler(-90 + info.normal.x, info.normal.y, info.normal.z);
-          grass.transform.localScale = new Vector3(1, 1, 5);
-        }
-      }
+    Ray ray = new Ray(origin, Vector3.down);
+    if (Physics.Raycast(ray, out RaycastHit info, 100, 1 << LayerMask.NameToLayer("Terrain"))) {
+      grass.transform.position = new Vector3(grass.transform.position.x, info.point.y, grass.transform.position.z);
+      grass.transform.localRotation = Quaternion.Euler(-90 + info.normal.x, info.normal.y, info.normal.z);
+      grass.transform.localScale = new Vector3(1, 1, 5);
     }
 
     return grassPlot;
@@ -85,7 +79,7 @@ public class VegetationSpawner : MonoBehaviour {
       for (int y = 1; y < size - 1; y++) {
         int index = x * size + y;
         if (treeNoise[index] > 0.5 && heightMap[x, y] > 2 && heightMap[x, y] < 6 && Noise.ShouldPlaceAtPosition(randomSeed, x, y, 0.56f)) {
-          SpawnTree(trees.transform, origin, new Vector2(x, (size - 1) - y));
+          SpawnTree(randomSeed, trees.transform, origin, new Vector2(x, (size - 1) - y));
         }
         // if (heightMap[x, y] > 1.25 && heightMap[x, y] < 4 && Noise.ShouldPlaceAtPosition(randomSeed, x, y, 0.95f)) {
         //   GameObject g = SpawnGrass(randomSeed, grass.transform, origin, new Vector2(x, (size - 1) - y));
